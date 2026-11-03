@@ -69,15 +69,20 @@ Java| Backend development
 Maven| Project management
 Gson| JSON processing
 
-Project Structure
-
 Penny_Expense_Tracker/
+│
 ├── LICENSE
 ├── README.md
 ├── pom.xml
-├── PennyServer.java
-├── index.html
-└── README.txt
+│
+└── src/
+    └── main/
+        ├── java/
+        │   └── PennyServer.java
+        │
+        └── resources/
+            └── static/
+                └── index.html
 
 Requirements
 
