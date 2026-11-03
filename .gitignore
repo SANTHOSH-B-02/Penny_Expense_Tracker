@@ -1,0 +1,16 @@
+Maven build files
+
+target/
+
+Personal application data
+
+penny-data.json
+
+Temporary files
+
+*.tmp
+
+IDE files
+
+.idea/
+.vscode/
