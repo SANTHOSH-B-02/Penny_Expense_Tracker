@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Penny – Personal Expense Tracker</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#eef2ef;--surface:#fff;--ink:#14302b;--mute:#566b66;--line:#d3ddd9;--brand:#1f7a5c;--on-brand:#fff;--warn:#b97a06;--bad:#c2412d;--track:#e0e9e5;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a18;--surface:#152523;--ink:#e6f0ed;--mute:#97aea8;--line:#284039;--brand:#3fbf94;--on-brand:#08201a;--warn:#e5a93a;--bad:#ef7a66;--track:#213733;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1a18;--surface:#152523;--ink:#e6f0ed;--mute:#97aea8;--line:#284039;--brand:#3fbf94;--on-brand:#08201a;--warn:#e5a93a;--bad:#ef7a66;--track:#213733;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
+.wrap{max-width:960px;margin:0 auto;padding:20px 16px 64px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.brand{font-weight:800;font-size:28px;letter-spacing:-.03em;margin:0}
+.brand small{display:block;font-weight:400;font-size:14px;letter-spacing:0;color:var(--mute)}
+nav{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:20px}
+nav button{background:none;border:0;border-bottom:3px solid transparent;color:var(--mute);font:600 15px inherit;font-family:inherit;padding:10px 14px;cursor:pointer;white-space:nowrap}
+nav button[aria-current="page"]{color:var(--ink);border-bottom-color:var(--brand)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px}
+.grid{display:grid;gap:16px;grid-template-columns:1fr}
+@media (min-width:760px){.grid.two{grid-template-columns:1fr 1fr}}
+h2{font-size:18px;margin:0 0 12px;letter-spacing:-.01em}
+.hero{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.ringwrap{position:relative;width:170px;flex:none}
+.ring{width:100%;display:block}
+.mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.mid small{color:var(--mute);font-size:12px}
+.mid strong{font-size:26px;font-weight:800;letter-spacing:-.02em}
+.hero p{margin:0 0 8px}
+.alert{border-left:4px solid var(--warn);background:var(--track);padding:8px 12px;border-radius:0 8px 8px 0;margin:6px 0;font-size:14px}
+.alert.over{border-color:var(--bad)}
+label{display:block;font-size:14px;font-weight:600;margin-bottom:10px}
+input,select{display:block;width:100%;margin-top:4px;padding:10px 12px;font:400 16px inherit;font-family:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hint{font-size:13px;color:var(--mute);font-weight:400;min-height:18px;margin:-4px 0 8px}
+.btn{font:600 15px inherit;font-family:inherit;padding:10px 18px;border-radius:999px;border:1px solid var(--brand);background:var(--brand);color:var(--on-brand);cursor:pointer}
+.btn.ghost{background:none;color:var(--ink);border-color:var(--line)}
+.btn.sm{padding:4px 12px;font-size:13px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+ul{list-style:none;margin:0;padding:0}
+.row{display:grid;grid-template-columns:12px 1fr auto;gap:4px 12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.dot{width:12px;height:12px;border-radius:50%;background:hsl(var(--h) 55% 48%)}
+.row small{display:block;color:var(--mute);font-size:13px}
+.amt{font-weight:800}
+.row .actions{grid-column:2/4}
+.empty{text-align:center;color:var(--mute);padding:24px 8px}
+.filters{display:grid;gap:10px;grid-template-columns:1fr}
+@media (min-width:640px){.filters{grid-template-columns:2fr 1fr 1fr}}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-bottom:14px}
+.seg button{background:none;border:0;padding:8px 16px;font:600 14px inherit;font-family:inherit;color:var(--mute);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--brand);color:var(--on-brand)}
+.chart{overflow-x:auto}
+.chart svg{width:100%;min-width:320px;height:auto}
+.chart text{fill:var(--mute);font-size:13px;font-family:inherit}
+.cat{display:grid;grid-template-columns:90px 1fr 80px;gap:10px;align-items:center;margin:8px 0;font-size:14px}
+.cat i{display:block;height:10px;border-radius:99px;background:hsl(var(--h) 55% 48%)}
+.cat span:last-child{text-align:right;font-weight:600}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;display:none;gap:12px;align-items:center;z-index:5;max-width:92vw}
+#toast button{background:none;border:0;color:inherit;font:700 14px inherit;font-family:inherit;text-decoration:underline;cursor:pointer}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1 class="brand">Penny<small>See where your money goes</small></h1>
+  <label style="margin:0;width:90px">Currency<select id="cur"><option>$</option><option>₹</option><option>€</option><option>£</option></select></label>
+</header>
+<nav id="tabs" aria-label="Sections"></nav>
+<section id="overview">
+  <div class="card hero" id="hero" style="margin-bottom:16px"></div>
+  <div class="grid two">
+    <form class="card" id="form" novalidate>
+      <h2 id="formTitle">Add an expense</h2>
+      <div class="two-col">
+        <label>Amount<input id="amount" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" required></label>
+        <label>Date<input id="date" type="date" required></label>
+      </div>
+      <label>Note<input id="note" type="text" maxlength="60" placeholder="e.g. lunch with Sam" autocomplete="off"></label>
+      <p class="hint" id="hint"></p>
+      <label>Category<select id="cat"></select></label>
+      <p class="hint" id="err" role="alert" style="color:var(--bad)"></p>
+      <div class="actions"><button class="btn" id="save" type="submit">Add expense</button><button class="btn ghost" id="cancel" type="button" hidden>Cancel</button></div>
+    </form>
+    <div class="card"><h2>Recent</h2><ul id="recent"></ul></div>
+  </div>
+</section>
+<section id="expenses" hidden>
+  <div class="card">
+    <div class="filters">
+      <label>Search<input id="q" type="search" placeholder="Search notes"></label>
+      <label>Category<select id="fcat"></select></label>
+      <label>Month<input id="fmonth" type="month"></label>
+    </div>
+    <p class="hint" id="total"></p><ul id="list"></ul>
+  </div>
+</section>
+<section id="reports" hidden>
+  <div class="card" style="margin-bottom:16px">
+    <div class="seg" role="group" aria-label="Report period">
+      <button data-p="daily" aria-pressed="true">Daily</button><button data-p="weekly" aria-pressed="false">Weekly</button><button data-p="monthly" aria-pressed="false">Monthly</button>
+    </div>
+    <h2 id="rtitle"></h2><div class="chart" id="chart"></div>
+  </div>
+  <div class="card"><h2>Where it went</h2><div id="breakdown"></div></div>
+</section>
+<section id="budget" hidden>
+  <form class="card" id="bform">
+    <h2>Monthly budget</h2>
+    <p class="hint">Set a limit and Penny warns you at 80% and again when you pass it. Leave a field empty for no limit.</p>
+    <label>Total monthly limit<input id="b-total" type="number" min="0" step="1" inputmode="decimal"></label>
+    <h2 style="margin-top:20px">Limits by category</h2><div class="two-col" id="bcats"></div>
+    <div class="actions"><button class="btn" type="submit">Save budget</button></div>
+  </form>
+</section>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+const CATS=["Food","Transport","Study","Shopping","Bills","Fun","Health","Other"];
+const KW={Food:["lunch","dinner","coffee","pizza","grocer","snack","cafe","meal","breakfast","restaurant"],Transport:["bus","uber","taxi","fuel","petrol","metro","train","ride","cab"],Study:["book","course","tuition","pen","notebook","print","exam","fees"],Shopping:["shirt","shoes","amazon","clothes","gift","shop"],Bills:["rent","wifi","internet","electric","phone","recharge","subscription","bill"],Fun:["movie","game","netflix","concert","party","spotify"],Health:["doctor","medicine","pharmacy","gym","clinic"]};
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+let S={expenses:[],budget:{total:0,cats:{}},cur:"$"};
+let saveQueue=Promise.resolve();
+const save=()=>{saveQueue=saveQueue.then(()=>fetch("/api/state",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(S)})).then(r=>{if(!r.ok)throw Error("Save failed")}).catch(()=>{toast("Could not save to Java server. Check that it is running.")});return saveQueue};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const money=n=>S.cur+n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const today=()=>iso(new Date());
+const hue=c=>Math.max(0,CATS.indexOf(c))*45;
+const fmtDate=s=>new Date(s+"T12:00").toLocaleDateString(undefined,{day:"numeric",month:"short"});
+const sum=a=>a.reduce((s,e)=>s+e.amount,0);
+let editId=null,period="daily",undoItem=null,tt;
+function suggest(note){const n=note.toLowerCase();for(const c in KW)if(KW[c].some(k=>n.includes(k)))return c;return ""}
+function toast(msg,undo){const t=$("#toast");t.innerHTML=esc(msg)+(undo?'<button id="undo">Undo</button>':"");t.style.display="flex";clearTimeout(tt);tt=setTimeout(()=>t.style.display="none",5000);if(undo)$("#undo").onclick=()=>{S.expenses.push(undoItem);save();render();t.style.display="none"}}
+const TABS=[["overview","Overview"],["expenses","All expenses"],["reports","Reports"],["budget","Budget"]];
+$("#tabs").innerHTML=TABS.map(t=>`<button data-t="${t[0]}">${t[1]}</button>`).join("");
+function show(t){if(!TABS.some(x=>x[0]==t))t="overview";TABS.forEach(x=>$("#"+x[0]).hidden=x[0]!=t);$$("#tabs button").forEach(b=>b.setAttribute("aria-current",b.dataset.t==t?"page":"false"));render()}
+$("#tabs").onclick=e=>{const b=e.target.closest("button");if(b)show(b.dataset.t)};
+const monthKey=()=>today().slice(0,7);
+const monthList=()=>S.expenses.filter(e=>e.date.startsWith(monthKey()));
+function alerts(){const m=monthList(),out=[];const chk=(name,spent,lim)=>{if(!(lim>0))return;const p=spent/lim;if(p>=1)out.push({over:1,t:`${name}: you’re ${money(spent-lim)} over your ${money(lim)} limit.`});else if(p>=.8)out.push({t:`${name}: ${Math.round(p*100)}% used, ${money(lim-spent)} left.`})};chk("Total",sum(m),S.budget.total);CATS.forEach(c=>chk(c,sum(m.filter(e=>e.category==c)),S.budget.cats[c]));return out}
+function gauge(spent,lim){const C=2*Math.PI*54,p=lim>0?Math.min(1,spent/lim):0;const col=!(lim>0)?"var(--mute)":spent>=lim?"var(--bad)":spent>=lim*.8?"var(--warn)":"var(--brand)";return `<svg viewBox="0 0 140 140" class="ring" role="img" aria-label="Budget used: ${Math.round(p*100)}%"><circle cx="70" cy="70" r="54" fill="none" stroke="var(--track)" stroke-width="14"/><circle cx="70" cy="70" r="54" fill="none" stroke="${col}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${C*p} ${C}" transform="rotate(-90 70 70)"/></svg>`}
+function rowHTML(e,actions){return `<li class="row"><span class="dot" style="--h:${hue(e.category)}"></span><div><b>${esc(e.note||e.category)}</b><small>${e.category}, ${fmtDate(e.date)}</small></div><b class="amt">${money(e.amount)}</b>${actions?`<div class="actions"><button class="btn ghost sm" data-edit="${e.id}">Edit</button><button class="btn ghost sm" data-del="${e.id}">Delete</button></div>`:""}</li>`}
+const sorted=a=>[...a].sort((x,y)=>y.date.localeCompare(x.date)||y.id-x.id);
+function renderOverview(){const spent=sum(monthList()),lim=+S.budget.total||0,al=alerts();$("#hero").innerHTML=`<div class="ringwrap">${gauge(spent,lim)}<div class="mid"><small>${lim>0?(spent>lim?"over budget":"left this month"):"spent this month"}</small><strong>${money(lim>0?Math.abs(lim-spent):spent)}</strong></div></div><div style="flex:1;min-width:200px"><p><b>${money(spent)}</b> spent${lim>0?" of "+money(lim):" so far this month"}.</p>${lim>0?"":'<p class="hint">Set a monthly limit under Budget to get alerts.</p>'}${al.map(a=>`<div class="alert ${a.over?"over":""}">${esc(a.t)}</div>`).join("")}</div>`;
+const r=sorted(S.expenses).slice(0,5);$("#recent").innerHTML=r.length?r.map(e=>rowHTML(e,true)).join(""):`<li class="empty">No expenses yet. Add your first one, or <button class="btn ghost sm" id="demo">load sample data</button></li>`}
+function renderList(){const q=$("#q").value.toLowerCase(),c=$("#fcat").value,m=$("#fmonth").value;const r=sorted(S.expenses).filter(e=>(!q||(e.note||"").toLowerCase().includes(q)||e.category.toLowerCase().includes(q))&&(!c||e.category==c)&&(!m||e.date.startsWith(m)));$("#total").textContent=`${r.length} expense${r.length==1?"":"s"}, ${money(sum(r))} total`;$("#list").innerHTML=r.length?r.map(e=>rowHTML(e,true)).join(""):`<li class="empty">Nothing matches. Clear the filters or add an expense.</li>`}
+function buckets(p){
+ const out=[],t=new Date();t.setHours(12);
+ if(p=="daily"){
+  for(let i=6;i>=0;i--){const d=new Date(t);d.setDate(d.getDate()-i);out.push({l:d.toLocaleDateString(undefined,{weekday:"short"}),from:iso(d),to:iso(d)})}
+ }else if(p=="weekly"){
+  const m=new Date(t);m.setDate(m.getDate()-((m.getDay()+6)%7));
+  for(let i=7;i>=0;i--){const a=new Date(m);a.setDate(a.getDate()-7*i);const b=new Date(a);b.setDate(b.getDate()+6);out.push({l:a.getDate()+"/"+(a.getMonth()+1),from:iso(a),to:iso(b)})}
+ }else{
+  for(let i=5;i>=0;i--){const a=new Date(t.getFullYear(),t.getMonth()-i,1,12),b=new Date(a.getFullYear(),a.getMonth()+1,0,12);out.push({l:a.toLocaleDateString(undefined,{month:"short"}),from:iso(a),to:iso(b)})}
+ }
+ out.forEach(o=>o.v=sum(S.expenses.filter(e=>e.date>=o.from&&e.date<=o.to)));return out
+}
+function renderReports(){$$(".seg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.p==period));const b=buckets(period),max=Math.max(1,...b.map(x=>x.v)),n=b.length,slot=600/n,bw=slot*.6;$("#rtitle").textContent={daily:"Last 7 days",weekly:"Last 8 weeks",monthly:"Last 6 months"}[period];$("#chart").innerHTML=`<svg viewBox="0 0 600 230" role="img" aria-label="Spending by ${period} period">`+b.map((x,i)=>{const h=x.v/max*150,cx=i*slot+slot/2,last=i==n-1;return `<rect x="${cx-bw/2}" y="${185-h}" width="${bw}" height="${Math.max(h,x.v?2:0)}" rx="4" fill="var(--brand)" opacity="${last?1:.5}"/><text x="${cx}" y="208" text-anchor="middle">${x.l}</text>${x.v?`<text x="${cx}" y="${177-h}" text-anchor="middle">${Math.round(x.v)}</text>`:""}`}).join("")+"</svg>";const rng=S.expenses.filter(e=>e.date>=b[0].from&&e.date<=b[n-1].to),tot=sum(rng);const by=CATS.map(c=>[c,sum(rng.filter(e=>e.category==c))]).filter(x=>x[1]>0).sort((a,c)=>c[1]-a[1]);$("#breakdown").innerHTML=by.length?by.map(([c,v])=>`<div class="cat"><span>${c}</span><span><i style="--h:${hue(c)};width:${v/by[0][1]*100}%"></i></span><span>${money(v)}</span></div>`).join("")+`<p class="hint">Total for this period: ${money(tot)}</p>`:`<p class="empty">No spending in this period yet.</p>`}
+function renderBudget(){$("#b-total").value=S.budget.total||"";$("#bcats").innerHTML=CATS.map(c=>`<label>${c}<input type="number" min="0" step="1" inputmode="decimal" data-c="${c}" value="${S.budget.cats[c]||""}"></label>`).join("")}
+function render(){ $("#cur").value=S.cur;if(!$("#overview").hidden)renderOverview();if(!$("#expenses").hidden)renderList();if(!$("#reports").hidden)renderReports() }
+$("#cat").innerHTML='<option value="">Auto (from note)</option>'+CATS.map(c=>`<option>${c}</option>`).join("");
+$("#fcat").innerHTML='<option value="">All</option>'+CATS.map(c=>`<option>${c}</option>`).join("");
+$("#date").value=today();
+$("#note").oninput=e=>{const s=suggest(e.target.value);$("#hint").textContent=s&&!$("#cat").value?`Looks like ${s}. Penny will file it there.`:""};
+function resetForm(){editId=null;$("#form").reset();$("#date").value=today();$("#hint").textContent="";$("#err").textContent="";$("#formTitle").textContent="Add an expense";$("#save").textContent="Add expense";$("#cancel").hidden=true}
+$("#cancel").onclick=resetForm;
+$("#form").onsubmit=e=>{e.preventDefault();const amt=parseFloat($("#amount").value),date=$("#date").value,note=$("#note").value.trim();if(!(amt>0)){$("#err").textContent="Enter an amount greater than zero.";return}if(!date){$("#err").textContent="Pick a date.";return}const category=$("#cat").value||suggest(note)||"Other";if(editId){const x=S.expenses.find(z=>z.id==editId);Object.assign(x,{amount:amt,date,note,category})}else S.expenses.push({id:Date.now(),amount:amt,date,note,category});const was=editId;resetForm();save();render();toast(was?"Changes saved":"Expense added")};
+document.addEventListener("click",e=>{const ed=e.target.closest("[data-edit]"),dl=e.target.closest("[data-del]");if(ed){const x=S.expenses.find(z=>z.id==ed.dataset.edit);if(!x)return;editId=x.id;show("overview");$("#amount").value=x.amount;$("#date").value=x.date;$("#note").value=x.note;$("#cat").value=x.category;$("#formTitle").textContent="Edit expense";$("#save").textContent="Save changes";$("#cancel").hidden=false;$("#form").scrollIntoView({behavior:"smooth"})}if(dl){undoItem=S.expenses.find(z=>z.id==dl.dataset.del);S.expenses=S.expenses.filter(z=>z.id!=dl.dataset.del);save();render();toast("Expense deleted",true)}if(e.target.id=="demo"){const notes=[["lunch",8],["bus pass",20],["coffee",4],["notebook",6],["netflix",12],["groceries",35],["movie night",15],["pharmacy",18],["wifi bill",30]];for(let i=0;i<30;i++){const n=notes[i%notes.length],d=new Date();d.setDate(d.getDate()-Math.floor(i*1.3));S.expenses.push({id:Date.now()+i,amount:+(n[1]*(0.8+((i*7)%5)/10)).toFixed(2),date:iso(d),note:n[0],category:suggest(n[0])||"Other"})}S.budget.total=S.budget.total||400;save();render()}const sg=e.target.closest(".seg button");if(sg){period=sg.dataset.p;renderReports()}});
+["#q","#fcat","#fmonth"].forEach(s=>$(s).addEventListener("input",renderList));
+$("#cur").onchange=e=>{S.cur=e.target.value;save();render()};
+$("#bform").onsubmit=e=>{e.preventDefault();S.budget.total=parseFloat($("#b-total").value)||0;S.budget.cats={};$$('#bcats input').forEach(i=>{const v=parseFloat(i.value);if(v>0)S.budget.cats[i.dataset.c]=v});save();toast("Budget saved");show("overview")};
+window.addEventListener("hashchange",()=>show(location.hash.slice(1)));
+async function start(){try{const response=await fetch("/api/state");if(!response.ok)throw Error();const data=await response.json();S={...S,...data,budget:{...S.budget,...(data.budget||{})}}}catch(e){toast("Java server connection failed. Start the app using the README instructions.")}renderBudget();show(location.hash.slice(1)||"overview")}
+start();
+</script>
+</body>
+</html>
